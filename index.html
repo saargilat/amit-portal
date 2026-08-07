@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Amit analysis</title>
+<link rel="stylesheet" href="lib/uplot.css">
+<link rel="stylesheet" href="style.css?v=21082d0125">
+</head>
+<body>
+<div id="lock" class="lock">
+  <div class="lockbox">
+    <h2>Amit analysis</h2>
+    <p>Data is encrypted at rest. Enter the portal password.</p>
+    <input id="pw" type="password" autofocus placeholder="password">
+    <button id="unlock">Unlock</button>
+    <div id="lockmsg"></div>
+  </div>
+</div>
+<div id="app" hidden>
+  <header>
+    <b>Amit</b>
+    <nav>
+      <a href="#games" class="tab">Games</a>
+      <a href="#sweep" class="tab">Sweep</a>
+      <a href="#books" class="tab">Books</a>
+      <a href="#lab" class="tab">What-if lab</a>
+    </nav>
+    <select id="since" title="Global start filter — applies to Games, Books and What-if lab (sweep grids are computed server-side over all picks)"></select>
+    <span id="meta"></span>
+    <span id="parity" title="JS scorers vs Python oracle">parity: …</span>
+      <button id="themebtn" title="toggle light/dark">🌙</button>
+  </header>
+  <main id="view"></main>
+</div>
+<script src="lib/uplot.js"></script>
+<script type="module" src="app.js?v=6916ffa753"></script>
+</body>
+</html>

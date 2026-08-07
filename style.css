@@ -1,0 +1,77 @@
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --text:#1c2733; --muted:#5c6b7a; --line:#dde3ea;
+  --hover:#eef2f6; --chip:#e8edf2; --accent:#2f7fd6; --good:#1e8e4e; --bad:#c9372c;
+  color-scheme: light;
+}
+:root[data-theme=dark]{
+  --bg:#14161a; --panel:#1c2027; --text:#e8e8e8; --muted:#8899aa; --line:#2a2f38;
+  --hover:#20242c; --chip:#20242c; --accent:#4aa3ff; --good:#2ecc71; --bad:#e74c3c;
+  color-scheme: dark;
+}
+body{margin:0;font:14px/1.45 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+header{display:flex;gap:16px;align-items:center;padding:10px 16px;background:var(--panel);position:sticky;top:0;border-bottom:1px solid var(--line)}
+nav a{color:var(--muted);text-decoration:none;margin-right:10px;padding:4px 8px;border-radius:6px}
+nav a.active{background:var(--chip);color:var(--text)}
+#meta{margin-left:auto;color:var(--muted);font-size:12px}
+#parity{font-size:12px;padding:2px 8px;border-radius:10px;background:var(--chip)}
+#parity.good{color:var(--good)}#parity.bad{color:var(--bad)}
+#themebtn{border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:6px;padding:2px 8px;cursor:pointer}
+main{padding:14px 16px;max-width:1150px;margin:0 auto}
+table.list{border-collapse:collapse;width:100%;font-size:13px}
+table.list th,table.list td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left}
+tr.rowlink{cursor:pointer} tr.rowlink:hover{background:var(--hover)}
+.good{color:var(--good)}.bad{color:var(--bad)}
+.ev{padding:2px 0;font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:5px;margin-right:6px}
+.sc{display:inline-block;background:var(--chip);border-radius:4px;padding:1px 6px;margin:2px;font-size:12px}
+.sliders{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0}
+.sl{display:flex;flex-direction:column;font-size:12px;color:var(--muted)}
+.sl b{cursor:help;border-bottom:1px dotted var(--muted)}
+.note{color:var(--muted);font-size:12px}
+.lock{display:flex;height:100vh;align-items:center;justify-content:center}
+.lockbox{background:var(--panel);padding:28px;border-radius:12px;text-align:center;border:1px solid var(--line)}
+.lockbox input{padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.lockbox button{padding:8px 16px;margin-left:6px;border-radius:6px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+#lockmsg{margin-top:10px;color:var(--bad);font-size:12px}
+h3 small{color:var(--muted)}
+.lock[hidden]{display:none}
+#app[hidden]{display:none}
+
+/* sweep explorer (2026-08-03): dropdown filters + scrollable grid */
+.fbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 8px 0; }
+.fsel { font-size: 13px; color: var(--muted); }
+.fsel select { margin-left: 4px; }
+.scrollbox { max-height: 70vh; overflow: auto; border: 1px solid var(--border); border-radius: 6px; }
+.scrollbox thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
+
+/* game view cross-highlighting + per-set score rows (2026-08-03) */
+.setrow { margin: 4px 0; font-size: 13px; }
+.setrow b { display: inline-block; min-width: 44px; color: var(--muted); }
+.sc { cursor: default; padding: 1px 3px; border-radius: 3px; }
+.sc.hot { background: #ffd76e; color: #222; }
+.ev { cursor: default; }
+.ev:hover { background: var(--panel); }
+#since { max-width: 300px; font-size: 12px; }
+.fbar button, .sliders + div button { font-size: 12px; }
+
+/* 2026-08-03 round 3 */
+.sl.off { opacity: .4; }
+.sc.fin { font-weight: 600; border: 1px solid var(--border); }
+
+/* 2026-08-03 round 4 */
+.rowdead { opacity: .5; cursor: default; }
+.ev.hot { background: #ffd76e; color: #222; }
+.ev.hot .note, .ev.hot b { color: #222; }
+
+/* game-to-game navigation (2026-08-03) */
+.gnav { display: flex; gap: 16px; align-items: center; margin: 6px 0 2px; font-size: 13px; }
+.gnav a { text-decoration: none; }
+#gatebox { border-left: 3px solid var(--border); padding-left: 10px; margin: 8px 0; }
+#gatebox.off { opacity: .4; }
+#gaterule { font-size: 14px; line-height: 1.6; }
+
+/* sweep row context menu (2026-08-04) */
+#ctxmenu { position: absolute; display: none; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.18); z-index: 50; font-size: 13px; }
+#ctxmenu .ci { padding: 7px 12px; cursor: pointer; }
+#ctxmenu .ci:hover { background: rgba(120,120,120,.15); }
