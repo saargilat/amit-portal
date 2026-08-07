@@ -74,7 +74,7 @@ async function unlock() {
   const msg = document.getElementById("lockmsg");
   msg.textContent = "decrypting…";
   try {
-    const buf = await (await dataFetch("bundle.enc?v=f293964d28")).arrayBuffer();
+    const buf = await (await dataFetch("bundle.enc?v=f28431c10f")).arrayBuffer();
     DATA = await decrypt(buf, pw);
     sessionStorage.setItem("amit_pw", pw);
     document.getElementById("lock").hidden = true;
@@ -213,9 +213,32 @@ function gameView(k) {
     <span class="note">${idx + 1} / ${list.length}</span>
     ${na ? `<a href="#${gh(na)}">${na.txn || ""} ${na.player || ""} →</a>` : ""}
     <span class="note">(arrow keys work too)</span></div>`;
+// RULES IN FORCE for a given game (user 2026-08-07): every lifecycle records the config it
+// actually traded under (ceiling/tp/stop/confirm_s; adm/unit/live too since 2026-08-07), so this
+// shows the rules EFFECTIVE THEN — never today's. Older rows lack adm/unit; those are backfilled
+// from the known deployment eras and flagged, rather than silently showing current values.
+function rulesInForce(r) {
+  const t = r.start_ts || "";
+  const era = t >= "2026-08-06T05:43" ? { adm: true, admMin: 40, label: "v2" }
+            : { adm: true, admMin: 70, label: "v1" };
+  const tp = r.tp;
+  return {
+    label: era.label,
+    ceiling: r.ceiling, unit: r.unit != null ? r.unit : 10,
+    tp: tp == null ? "?" : (tp >= 100 ? "OFF (ride to settlement)" : tp + "\u00a2"),
+    stop: r.stop == null ? "off" : r.stop + "\u00a2",
+    cfm: r.confirm_s == null ? "" : (r.confirm_s === 0 ? "instant" : (r.confirm_s / 60) + "min sustained"),
+    adm: (r.adm_follow != null ? r.adm_follow : era.adm)
+         ? "follow \u2265" + (r.adm_min != null ? r.adm_min : era.admMin) + "\u00a2" : "never",
+    mirrored: r.live_mirrored === true,
+    backfilled: r.adm_follow == null,
+  };
+}
+
   view().innerHTML = `${nav}<h3>${r.player} — ${r.mkt || "?"} <small>(${r.outcome || "active"}, P&L ${r.pnl ?? "?"})</small></h3>
     <p class="note">bid/ask are ${r.player}'s own market; score is shown ${r.player}-first · hover the graph,
     the score strip, or an event to cross-highlight · * = serving that game</p>
+    ${(() => { const R = rulesInForce(r); return `<p class="note" title="The auto-trader rules EFFECTIVE FOR THIS GAME, recorded at trade time — not the current settings.${R.backfilled ? " (admin-follow/unit backfilled from the deployment era: this lifecycle predates per-pick recording of those two fields.)" : ""}"><b>rules in force</b> (${R.label}) · ceiling ${R.ceiling}\u00a2 · take-profit ${R.tp} · stop ${R.stop} ${R.cfm} · admin sells ${R.adm} · unit $${R.unit}${R.mirrored ? ` · <b class="good">REAL money</b>` : ""}${R.backfilled ? " \u1d47" : ""}</p>`; })()}
     <div id="chart"></div><div id="scorestrip"></div><h4>Events</h4><div id="events"></div>`;
   const t0 = Date.parse(r.start_ts) / 1000;
   const xs = (r.toff || []).map(o => t0 + o);
