@@ -75,3 +75,76 @@ h3 small{color:var(--muted)}
   border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.18); z-index: 50; font-size: 13px; }
 #ctxmenu .ci { padding: 7px 12px; cursor: pointer; }
 #ctxmenu .ci:hover { background: rgba(120,120,120,.15); }
+
+/* ============================================================================
+   MOBILE (user 2026-08-07). Everything below is inside a max-width query or a
+   coarse-pointer query, so the DESKTOP layout is byte-for-byte unchanged.
+   ========================================================================== */
+@media (max-width: 700px) {
+  body { font-size: 15px; }                       /* touch targets / legibility */
+  main { padding: 10px 8px; }
+
+  /* header: 6 flex children used to squeeze into one line. Wrap into two rows,
+     nav first and full width, diagnostics demoted. */
+  header { flex-wrap: wrap; gap: 8px 10px; padding: 8px 10px; }
+  header > b { font-size: 15px; }
+  nav { order: 3; width: 100%; display: flex; gap: 2px; }
+  nav a { flex: 1; margin: 0; text-align: center; padding: 8px 4px; font-size: 14px; }
+  #since { order: 4; width: 100%; max-width: none; padding: 6px; font-size: 13px; }
+  #meta { order: 5; margin-left: 0; font-size: 11px; }
+  #parity { order: 6; font-size: 11px; }
+  #themebtn { margin-left: auto; padding: 6px 10px; }
+
+  /* tables: keep the columns that answer "what happened", drop the rest.
+     Games grid = date | txn($/RETRACTED) | player | outcome | P&L */
+  table.list { font-size: 13px; }
+  table.list th, table.list td { padding: 6px 4px; }
+  #gameslist th:nth-child(4), #gameslist td:nth-child(4),   /* entry */
+  #gameslist th:nth-child(5), #gameslist td:nth-child(5),   /* exit  */
+  #gameslist th:nth-child(8), #gameslist td:nth-child(8),   /* gate  */
+  #gameslist th:nth-child(9), #gameslist td:nth-child(9) {  /* ghost */
+    display: none;
+  }
+
+  /* the sweep grid is genuinely wide — let it scroll sideways rather than crush it,
+     with the rank column pinned so a row stays identifiable while scrolling. */
+  .scrollbox { max-height: 62vh; -webkit-overflow-scrolling: touch; }
+  #grid { font-size: 12px; white-space: nowrap; }
+  #grid th, #grid td { padding: 5px 6px; }
+  #grid th:first-child, #grid td:first-child {
+    position: sticky; left: 0; background: var(--panel); z-index: 2;
+  }
+
+  /* filters + lab controls stack to full width; ranges need real thumb room */
+  .fbar { gap: 8px; }
+  .fsel { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .fsel select { margin-left: 8px; flex: 1; padding: 6px; font-size: 13px; }
+  .sliders { gap: 10px; }
+  .sl { width: 100%; }
+  .sl input[type=range] { width: 100%; height: 28px; }
+  .fbar button, .sliders + div button { padding: 8px 12px; font-size: 13px; }
+  .sliders + div label { display: block; margin: 6px 0; }
+
+  h3 { font-size: 17px; line-height: 1.3; }
+  h3 small { display: block; margin-top: 2px; font-size: 12px; }
+  .setrow { font-size: 12px; }
+  .lockbox { margin: 0 12px; padding: 20px; }
+  .lockbox input { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
+  .lockbox button { margin-left: 0; width: 100%; }
+}
+
+/* touch devices: hover-only affordances have no equivalent, so make the tap
+   targets bigger and mark elements whose explanation lives in a title tooltip. */
+@media (hover: none) {
+  tr.rowlink td { padding-top: 9px; padding-bottom: 9px; }
+  .tiphint { border-bottom: 1px dotted var(--muted); }
+}
+
+/* tap-to-read tooltip toast (mobile only; desktop keeps native title hovers) */
+#tiptoast {
+  position: fixed; left: 8px; right: 8px; bottom: 12px; z-index: 50;
+  background: var(--panel); color: var(--text); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.4;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+}
+#tiptoast[hidden] { display: none; }

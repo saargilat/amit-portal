@@ -74,7 +74,7 @@ async function unlock() {
   const msg = document.getElementById("lockmsg");
   msg.textContent = "decrypting…";
   try {
-    const buf = await (await dataFetch("bundle.enc?v=e3c83368e6")).arrayBuffer();
+    const buf = await (await dataFetch("bundle.enc?v=6b6bb6d6a7")).arrayBuffer();
     DATA = await decrypt(buf, pw);
     sessionStorage.setItem("amit_pw", pw);
     document.getElementById("lock").hidden = true;
@@ -151,7 +151,7 @@ function gamesList() {
     ? `<p class="note">⚠️ live activity on market(s) with no recorded game: ${unmatched.join(", ")} — manual trades or resolver gaps; not shown in any game view.</p>`
     : "";
   view().innerHTML = liveWarn + `<h3>Games (${rows.length}) <small>· pick won ${pct(pw, decided)} ·
-    profitable ${pct(prof, closed)} · <span title="PAPER book total — the simulation's ledger, not the account">paper P&L <span class="${tot >= 0 ? "good" : "bad"}">${tot.toFixed(2)}</span></span>${liveLine}${lastTxt}</small></h3>` + unmatchedNote + `<div class="scrollbox"><table class="list"><thead><tr>
+    profitable ${pct(prof, closed)} · <span title="PAPER book total — the simulation's ledger, not the account">paper P&L <span class="${tot >= 0 ? "good" : "bad"}">${tot.toFixed(2)}</span></span>${liveLine}${lastTxt}</small></h3>` + unmatchedNote + `<div class="scrollbox"><table class="list" id="gameslist"><thead><tr>
     <th>date</th><th>txn</th><th>player</th><th>entry</th><th>exit</th><th>outcome</th><th>P&L</th>
     <th>gate</th><th>ghost</th></tr></thead><tbody>` +
     rows.map(r => { const live = (r.toff || []).length || (DATA.scores[r.mkt] || []).length;
@@ -296,8 +296,11 @@ function rulesInForce(r) {
     uu.redraw();
   }
 
+  // mobile (2026-08-07): a 400px plot plus the mark band leaves no room for the score
+  // strip on a phone; shrink the plot only, keeping the mark band intact.
+  const CH = window.matchMedia("(max-width: 700px)").matches ? 240 : 400;
   const u = new uPlot({
-    width: W, height: 400 + padTop, padding: [padTop, 8, 0, 0],
+    width: W, height: CH + padTop, padding: [padTop, 8, 0, 0],
     scales: { y: { range: [0, 100] } },
     series: [{}, { label: "bid", stroke: "#4aa3ff", width: 1 },
       { label: "ask", stroke: "#ffb14a", width: 1 }],
@@ -927,3 +930,31 @@ document.getElementById("unlock").addEventListener("click", unlock);
 document.getElementById("pw").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
 const saved = sessionStorage.getItem("amit_pw");
 if (saved) { document.getElementById("pw").value = saved; unlock(); }
+
+// ---------------- mobile affordances (user 2026-08-07) ----------------
+// Desktop is untouched: everything here is gated on a coarse pointer. On touch there is no
+// hover, so the explanations that live in title= attributes are unreachable — tapping an
+// informational element shows its text in a dismissable toast instead.
+if (window.matchMedia("(hover: none)").matches) {
+  const toast = document.createElement("div");
+  toast.id = "tiptoast"; toast.hidden = true;
+  document.body.appendChild(toast);
+  const hide = () => { toast.hidden = true; };
+  toast.addEventListener("click", hide);
+  document.addEventListener("click", e => {
+    if (e.target.closest("#tiptoast")) return;
+    // only INFORMATIONAL elements — never hijack a row, tab, button or control
+    const el = e.target.closest("th[title], .note[title], b[title], span[title], label[title]");
+    if (!el || e.target.closest("tr.rowlink, a, button, select, input")) return hide();
+    const t = el.getAttribute("title");
+    if (!t) return hide();
+    toast.textContent = t;
+    toast.hidden = false;
+  }, true);
+  // mark tooltip-bearing text so it's discoverable rather than invisible
+  const mark = () => document.querySelectorAll("th[title], .note[title], b[title]")
+    .forEach(el => el.classList.add("tiphint"));
+  new MutationObserver(mark).observe(document.getElementById("view") || document.body,
+                                     { childList: true, subtree: true });
+  mark();
+}
