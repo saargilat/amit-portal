@@ -39,7 +39,7 @@ const attr = t => String(t || "").replace(/"/g, "&quot;");
 // global start filter (user 2026-08-03) — applies to Games/Books/Lab; sweep grids are
 // Python-computed over all picks and cannot be re-cut client-side.
 const SINCE_OPTS = [
-  ["2026-08-06", "since Aug 6 — v2 era (frozen top-50 locked, #1-combo candidate)"],
+  ["2026-08-06", "since Aug 6 — v2 era (switched over Aug 5 22:43 PT)"],
   ["2026-07-30", "since Jul 30 — FULL data (scores + price series through settlement)"],
   ["2026-07-25", "since Jul 25 — strategy frozen"],
   ["", "all picks"],
@@ -74,7 +74,7 @@ async function unlock() {
   const msg = document.getElementById("lockmsg");
   msg.textContent = "decrypting…";
   try {
-    const buf = await (await dataFetch("bundle.enc?v=f6b1dd340a")).arrayBuffer();
+    const buf = await (await dataFetch("bundle.enc?v=04321387e7")).arrayBuffer();
     DATA = await decrypt(buf, pw);
     sessionStorage.setItem("amit_pw", pw);
     document.getElementById("lock").hidden = true;
