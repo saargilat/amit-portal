@@ -74,7 +74,7 @@ async function unlock() {
   const msg = document.getElementById("lockmsg");
   msg.textContent = "decrypting…";
   try {
-    const buf = await (await dataFetch("bundle.enc?v=3161627f06")).arrayBuffer();
+    const buf = await (await dataFetch("bundle.enc?v=046e4c5bc0")).arrayBuffer();
     DATA = await decrypt(buf, pw);
     sessionStorage.setItem("amit_pw", pw);
     document.getElementById("lock").hidden = true;
@@ -163,9 +163,37 @@ function gamesList() {
       <td class="${(r.pnl || 0) >= 0 ? "good" : "bad"}">${r.pnl ?? ""}</td>
       <td>${r.gate_verdict ? r.gate_verdict.verdict : ""}</td>
       <td>${ghostCell(r)}</td></tr>`; }).join("") +
-    `</tbody></table></div>`;
+    `</tbody></table></div>` + altMarketPanel();
   view().querySelectorAll(".rowlink").forEach(tr =>
     tr.addEventListener("click", () => location.hash = "games/" + encodeURIComponent(tr.dataset.k)));
+}
+
+// Alt-market SHADOW recorder — the admin's totals / set-winner / exact-score calls, booked
+// against the real Kalshi sibling markets but NEVER traded. Its own panel, its own totals:
+// nothing here is ever folded into the paper P&L above. "live" rows were priced at the ask
+// when the call arrived; "backfill" rows are reconstructed history priced from the admin's
+// stated odds and are scored separately.
+function altMarketPanel() {
+  const rows = (DATA.altmarket || []).filter(r => sinceOK(r.t));
+  if (!rows.length) return "";
+  const bucket = src => {
+    const b = rows.filter(r => r.src === src && r.won !== null && r.won !== undefined);
+    const priced = b.filter(r => r.pnl != null);
+    const w = b.filter(r => r.won).length;
+    const pnl = priced.reduce((a, r) => a + r.pnl, 0);
+    return b.length ? `${w}/${b.length} won` + (priced.length ? ` <span class="${pnl >= 0 ? "good" : "bad"}">${pnl.toFixed(2)}</span>` + (priced.length !== b.length ? ` <small>(P&L over ${priced.length} priced)</small>` : "") : "") : "none settled";
+  };
+  const st = r => r.won === true ? "WIN" : r.won === false ? "LOSS" : (r.status === "open" || r.status === "backfill") ? "open" : r.status;
+  return `<h3 style="margin-top:1.4em">Alt-market shadow <small>(totals · set winner · exact score — <b>recorded, never traded</b>) · live ${bucket("live")} · backfill ${bucket("backfill")}</small></h3>
+    <div class="scrollbox"><table class="list"><thead><tr>
+    <th>date</th><th>kind</th><th>call</th><th>side</th><th>src</th><th>entry</th><th>ct</th><th>result</th><th>P&L</th><th>notes</th></tr></thead><tbody>` +
+    rows.map(r => `<tr>
+      <td>${(r.t || "").slice(0, 10)}</td><td>${r.kind || ""}</td><td title="${(r.text || "").replace(/"/g, "&quot;")}">${r.label || ""}</td>
+      <td>${r.side || ""}</td><td>${r.src}</td><td>${r.entry ?? ""}${r.stated_odds ? ` <small>(${r.stated_odds})</small>` : ""}</td>
+      <td>${r.contracts ?? ""}</td><td class="${r.won === true ? "good" : r.won === false ? "bad" : ""}">${st(r)}</td>
+      <td class="${(r.pnl ?? 0) >= 0 ? "good" : "bad"}">${r.pnl != null ? r.pnl.toFixed(2) : ""}</td>
+      <td><small>${[r.inherited ? "link inherited" : "", r.admin_deleted ? "admin deleted later" : "", r.reason || ""].filter(Boolean).join(" · ")}</small></td></tr>`).join("") +
+    `</tbody></table></div>`;
 }
 const key = r => `${r.txn || "x"}|${r.mkt || r.player}`;
 // stale-spec ghosts are shown RE-SCORED under the frozen v2.1 spec (defect-fix policy: history is
