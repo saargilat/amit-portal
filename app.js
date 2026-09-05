@@ -39,6 +39,7 @@ const attr = t => String(t || "").replace(/"/g, "&quot;");
 // global start filter (user 2026-08-03) — applies to Games/Books/Lab; sweep grids are
 // Python-computed over all picks and cannot be re-cut client-side.
 const SINCE_OPTS = [
+  ["2026-09-05", "since Sep 5 — v3 exit rule (tp 85¢ / stop 20¢, switched 08:28 PT)"],
   ["2026-08-06", "since Aug 6 — v2 era (switched over Aug 5 22:43 PT)"],
   ["2026-07-30", "since Jul 30 — FULL data (scores + price series through settlement)"],
   ["2026-07-25", "since Jul 25 — strategy frozen"],
@@ -74,7 +75,7 @@ async function unlock() {
   const msg = document.getElementById("lockmsg");
   msg.textContent = "decrypting…";
   try {
-    const buf = await (await dataFetch("bundle.enc?v=4ec1bc1c1b")).arrayBuffer();
+    const buf = await (await dataFetch("bundle.enc?v=1ae7c0c6ef")).arrayBuffer();
     DATA = await decrypt(buf, pw);
     sessionStorage.setItem("amit_pw", pw);
     document.getElementById("lock").hidden = true;
@@ -247,7 +248,9 @@ function gameView(k) {
 // from the known deployment eras and flagged, rather than silently showing current values.
 function rulesInForce(r) {
   const t = r.start_ts || "";
-  const era = t >= "2026-08-06T05:43" ? { adm: true, admMin: 40, label: "v2" }
+  // v3 (2026-09-05 08:28 PT): exit rule only — tp 85¢ / stop 20¢; ceiling and admin floor unchanged.
+  const era = t >= "2026-09-05T15:28" ? { adm: true, admMin: 40, label: "v3" }   // UTC of 08:28 PDT
+            : t >= "2026-08-06T05:43" ? { adm: true, admMin: 40, label: "v2" }
             : { adm: true, admMin: 70, label: "v1" };
   const tp = r.tp;
   return {
