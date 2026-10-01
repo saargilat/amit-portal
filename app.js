@@ -86,7 +86,7 @@ async function unlock() {
   const msg = document.getElementById("lockmsg");
   msg.textContent = "decrypting…";
   try {
-    const buf = await (await dataFetch("bundle.enc?v=d49301c770")).arrayBuffer();
+    const buf = await (await dataFetch("bundle.enc?v=1bb3f3715a")).arrayBuffer();
     DATA = await decrypt(buf, pw);
     sessionStorage.setItem("amit_pw", pw);
     document.getElementById("lock").hidden = true;
