@@ -1,0 +1,163 @@
+:root{
+  --bg:#f5f6f8; --panel:#ffffff; --text:#1c2733; --muted:#5c6b7a; --line:#dde3ea;
+  --hover:#eef2f6; --chip:#e8edf2; --accent:#2f7fd6; --good:#1e8e4e; --bad:#c9372c;
+  color-scheme: light;
+}
+:root[data-theme=dark]{
+  --bg:#14161a; --panel:#1c2027; --text:#e8e8e8; --muted:#8899aa; --line:#2a2f38;
+  --hover:#20242c; --chip:#20242c; --accent:#4aa3ff; --good:#2ecc71; --bad:#e74c3c;
+  color-scheme: dark;
+}
+body{margin:0;font:14px/1.45 -apple-system,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+header{display:flex;gap:16px;align-items:center;padding:10px 16px;background:var(--panel);position:sticky;top:0;border-bottom:1px solid var(--line)}
+nav a{color:var(--muted);text-decoration:none;margin-right:10px;padding:4px 8px;border-radius:6px}
+nav a.active{background:var(--chip);color:var(--text)}
+#meta{margin-left:auto;color:var(--muted);font-size:12px}
+#parity{font-size:12px;padding:2px 8px;border-radius:10px;background:var(--chip)}
+#parity.good{color:var(--good)}#parity.bad{color:var(--bad)}
+#themebtn{border:1px solid var(--line);background:var(--chip);color:var(--text);border-radius:6px;padding:2px 8px;cursor:pointer}
+main{padding:14px 16px;max-width:1150px;margin:0 auto}
+table.list{border-collapse:collapse;width:100%;font-size:13px}
+table.list th,table.list td{padding:4px 8px;border-bottom:1px solid var(--line);text-align:left}
+tr.rowlink{cursor:pointer} tr.rowlink:hover{background:var(--hover)}
+.good{color:var(--good)}.bad{color:var(--bad)}
+.ev{padding:2px 0;font-size:13px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:5px;margin-right:6px}
+.sc{display:inline-block;background:var(--chip);border-radius:4px;padding:1px 6px;margin:2px;font-size:12px}
+.sliders{display:flex;flex-wrap:wrap;gap:14px;margin:10px 0}
+.sl{display:flex;flex-direction:column;font-size:12px;color:var(--muted)}
+.sl b{cursor:help;border-bottom:1px dotted var(--muted)}
+.note{color:var(--muted);font-size:12px}
+.lock{display:flex;height:100vh;align-items:center;justify-content:center}
+.lockbox{background:var(--panel);padding:28px;border-radius:12px;text-align:center;border:1px solid var(--line)}
+.lockbox input{padding:8px;border-radius:6px;border:1px solid var(--line);background:var(--bg);color:var(--text)}
+.lockbox button{padding:8px 16px;margin-left:6px;border-radius:6px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+#lockmsg{margin-top:10px;color:var(--bad);font-size:12px}
+h3 small{color:var(--muted)}
+.lock[hidden]{display:none}
+#app[hidden]{display:none}
+
+/* sweep explorer (2026-08-03): dropdown filters + scrollable grid */
+.fbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 8px 0; }
+.fsel { font-size: 13px; color: var(--muted); }
+.fsel select { margin-left: 4px; }
+.scrollbox { max-height: 70vh; overflow: auto; border: 1px solid var(--border); border-radius: 6px; }
+.scrollbox thead th { position: sticky; top: 0; background: var(--panel); z-index: 1; }
+
+/* sweep tab v2 (2026-09-25): pipeline grid */
+.warnbox { border-left: 4px solid var(--bad); background: var(--panel); padding: 8px 12px; margin: 8px 0; font-size: 13px; }
+.lockedbox { border-left: 4px solid var(--accent); background: var(--panel); padding: 8px 12px; margin: 8px 0; font-size: 13px; }
+.sw-sec { margin: 8px 0; }
+.sw-sec > summary { cursor: pointer; }
+.margins { display: flex; flex-wrap: wrap; gap: 12px; }
+.margins table.margin { width: auto; }
+tr.locked td { background: color-mix(in srgb, var(--accent) 14%, transparent); font-weight: 600; }
+/* forward window (2026-09-25, user decision "A"): the locked choice's forward number = the clean out-of-sample test */
+.cleantest { outline: 2px solid var(--accent); outline-offset: -2px; border-radius: 3px; padding: 0 3px; }
+span.cleantest { font-size: 11px; font-weight: 600; }
+.idchg { font-size: 11px; font-weight: 600; color: var(--bad); }
+
+/* game view cross-highlighting + per-set score rows (2026-08-03) */
+.setrow { margin: 4px 0; font-size: 13px; }
+.setrow b { display: inline-block; min-width: 44px; color: var(--muted); }
+.sc { cursor: default; padding: 1px 3px; border-radius: 3px; }
+.sc.hot { background: #ffd76e; color: #222; }
+.ev { cursor: default; }
+.ev:hover { background: var(--panel); }
+#since { max-width: 300px; font-size: 12px; }
+.fbar button, .sliders + div button { font-size: 12px; }
+
+/* 2026-08-03 round 3 */
+.sl.off { opacity: .4; }
+.sc.fin { font-weight: 600; border: 1px solid var(--border); }
+
+/* 2026-08-03 round 4 */
+.rowdead { opacity: .5; cursor: default; }
+.ev.hot { background: #ffd76e; color: #222; }
+.ev.hot .note, .ev.hot b { color: #222; }
+
+/* game-to-game navigation (2026-08-03) */
+.gnav { display: flex; gap: 16px; align-items: center; margin: 6px 0 2px; font-size: 13px; }
+.gnav a { text-decoration: none; }
+#gatebox { border-left: 3px solid var(--border); padding-left: 10px; margin: 8px 0; }
+#gatebox.off { opacity: .4; }
+#gaterule { font-size: 14px; line-height: 1.6; }
+
+/* sweep row context menu (2026-08-04) */
+#ctxmenu { position: absolute; display: none; background: var(--panel); border: 1px solid var(--border);
+  border-radius: 6px; box-shadow: 0 4px 14px rgba(0,0,0,.18); z-index: 50; font-size: 13px; }
+#ctxmenu .ci { padding: 7px 12px; cursor: pointer; }
+#ctxmenu .ci:hover { background: rgba(120,120,120,.15); }
+
+/* ============================================================================
+   MOBILE (user 2026-08-07). Everything below is inside a max-width query or a
+   coarse-pointer query, so the DESKTOP layout is byte-for-byte unchanged.
+   ========================================================================== */
+@media (max-width: 700px) {
+  body { font-size: 15px; }                       /* touch targets / legibility */
+  main { padding: 10px 8px; }
+
+  /* header: 6 flex children used to squeeze into one line. Wrap into two rows,
+     nav first and full width, diagnostics demoted. */
+  header { flex-wrap: wrap; gap: 8px 10px; padding: 8px 10px; }
+  header > b { font-size: 15px; }
+  nav { order: 3; width: 100%; display: flex; gap: 2px; }
+  nav a { flex: 1; margin: 0; text-align: center; padding: 8px 4px; font-size: 14px; }
+  #since { order: 4; width: 100%; max-width: none; padding: 6px; font-size: 13px; }
+  #meta { order: 5; margin-left: 0; font-size: 11px; }
+  #parity { order: 6; font-size: 11px; }
+  #themebtn { margin-left: auto; padding: 6px 10px; }
+
+  /* tables: keep the columns that answer "what happened", drop the rest.
+     Games grid = date | txn($/RETRACTED) | player | outcome | P&L */
+  table.list { font-size: 13px; }
+  table.list th, table.list td { padding: 6px 4px; }
+  #gameslist th:nth-child(4), #gameslist td:nth-child(4),   /* entry */
+  #gameslist th:nth-child(5), #gameslist td:nth-child(5),   /* exit  */
+  #gameslist th:nth-child(8), #gameslist td:nth-child(8),   /* gate  */
+  #gameslist th:nth-child(9), #gameslist td:nth-child(9) {  /* ghost */
+    display: none;
+  }
+
+  /* the sweep grid is genuinely wide — let it scroll sideways rather than crush it,
+     with the rank column pinned so a row stays identifiable while scrolling. */
+  .scrollbox { max-height: 62vh; -webkit-overflow-scrolling: touch; }
+  #grid { font-size: 12px; white-space: nowrap; }
+  #grid th, #grid td { padding: 5px 6px; }
+  #grid th:first-child, #grid td:first-child {
+    position: sticky; left: 0; background: var(--panel); z-index: 2;
+  }
+
+  /* filters + lab controls stack to full width; ranges need real thumb room */
+  .fbar { gap: 8px; }
+  .fsel { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .fsel select { margin-left: 8px; flex: 1; padding: 6px; font-size: 13px; }
+  .sliders { gap: 10px; }
+  .sl { width: 100%; }
+  .sl input[type=range] { width: 100%; height: 28px; }
+  .fbar button, .sliders + div button { padding: 8px 12px; font-size: 13px; }
+  .sliders + div label { display: block; margin: 6px 0; }
+
+  h3 { font-size: 17px; line-height: 1.3; }
+  h3 small { display: block; margin-top: 2px; font-size: 12px; }
+  .setrow { font-size: 12px; }
+  .lockbox { margin: 0 12px; padding: 20px; }
+  .lockbox input { width: 100%; box-sizing: border-box; margin-bottom: 8px; }
+  .lockbox button { margin-left: 0; width: 100%; }
+}
+
+/* touch devices: hover-only affordances have no equivalent, so make the tap
+   targets bigger and mark elements whose explanation lives in a title tooltip. */
+@media (hover: none) {
+  tr.rowlink td { padding-top: 9px; padding-bottom: 9px; }
+  .tiphint { border-bottom: 1px dotted var(--muted); }
+}
+
+/* tap-to-read tooltip toast (mobile only; desktop keeps native title hovers) */
+#tiptoast {
+  position: fixed; left: 8px; right: 8px; bottom: 12px; z-index: 50;
+  background: var(--panel); color: var(--text); border: 1px solid var(--line);
+  border-radius: 10px; padding: 12px 14px; font-size: 13px; line-height: 1.4;
+  box-shadow: 0 6px 24px rgba(0,0,0,.25);
+}
+#tiptoast[hidden] { display: none; }
